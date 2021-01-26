@@ -112,3 +112,28 @@ Ao finalizar a implementação, o diretório da solução pode ser submetido de 
 1. por email, compactado, para `it@t10.digital` com o assunto `Backend Assessment`
 
 Feito 🤘
+
+
+## Documentação
+
+### Rotas:
+- users/registration/ 
+  - Rota para criação de usuários, recebe como parâmentros username, email e password
+  
+- users/login/
+  - Rota para login de usuários, recebe como parâmetros username e password e retorna dois tokens JWT, "access" e "refresh"
+  
+- users/login/refresh/ 
+  - Rota para atualizar o token JWT expirado, recebe como parâmentro o token refresh, e retorna um novo token access
+
+### Detalhes:
+- Login
+  - Ao fazer login, o usuário recebe dois tokens JWT, "refresh" e "access". O token access é utilizado para realizar a autenticação nas rotas, já o token refresh é utilizado para atualizar o token access expirado
+  ```
+          {
+              "refresh": "...",
+              "access": "..."
+          }
+  ```
+  
+
