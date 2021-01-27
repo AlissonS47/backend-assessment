@@ -140,6 +140,9 @@ Feito 🤘
 - requests/{id}/ 
   - Se utilizado o método PATCH por um super usuário, faz uma atualização parcial da solicitação correspondente ao id, sendo possível
     atualizar somente o "status" da solicitação
+    
+- requests/{id}/ 
+  - Se utilizado o método DELETE pelo dono da solicitação, cancela a solicitação correspondente ao id
 
 ### Detalhes:
 - Autenticação
