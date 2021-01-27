@@ -21,7 +21,7 @@ class RequestSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Request
-        fields = ['message', 'checked', 'status']
+        fields = ['id', 'message', 'checked', 'status']
 
 
 class RequestRegistrationSerializer(serializers.ModelSerializer):

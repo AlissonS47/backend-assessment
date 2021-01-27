@@ -34,7 +34,7 @@ class RequestViewSet(viewsets.ModelViewSet):
     serializer_class = SuperRequestSerializer
     filter_backends = [DjangoFilterBackend,]
     filterset_fields = ['checked',]
-    http_method_names = ['get', 'post', 'patch']
+    http_method_names = ['get', 'post', 'patch', 'delete']
     
     def create(self, request):
         serializer = RequestRegistrationSerializer(
@@ -64,14 +64,18 @@ class RequestViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     def retrieve(self, request, pk=None):
+        request_queryset = Request.objects.get(id=pk)
         if request.user.is_staff:
-            request_queryset = Request.objects.get(id=pk)
             serializer = SuperRequestSerializer(request_queryset)
             return Response(serializer.data)
         else:
-            response_message = {"Failed": "Action denied"}
-            response_status = status.HTTP_401_UNAUTHORIZED
-            return Response(data=response_message, status=response_status)
+            if request.user == request_queryset.user:
+                serializer = RequestSerializer(request_queryset)
+                return Response(serializer.data)
+            else:
+                response_message = {"Failed": "Action denied"}
+                response_status = status.HTTP_401_UNAUTHORIZED
+                return Response(data=response_message, status=response_status)
 
     def partial_update(self, request, pk=None):
         if request.user.is_staff:
@@ -91,6 +95,17 @@ class RequestViewSet(viewsets.ModelViewSet):
             else:
                 response_message = {"Failed": serializer.errors}
                 response_status = status.HTTP_422_UNPROCESSABLE_ENTITY
+        else:
+            response_message = {"Failed": "Action denied"}
+            response_status = status.HTTP_401_UNAUTHORIZED
+        return Response(data=response_message, status=response_status)
+    
+    def destroy(self, request, pk=None):
+        request_queryset = Request.objects.get(id=pk)
+        response_status = status.HTTP_200_OK
+        response_message = {"Success": "request successfully cancelled"}
+        if request.user == request_queryset.user:
+            request_queryset.delete()
         else:
             response_message = {"Failed": "Action denied"}
             response_status = status.HTTP_401_UNAUTHORIZED
