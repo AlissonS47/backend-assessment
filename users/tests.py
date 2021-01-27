@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 class UserTestCase(APITestCase):
     """ Tests all actions related to users
         
-        Parameters:
+        Variables:
         user_data: user login information
     """
     

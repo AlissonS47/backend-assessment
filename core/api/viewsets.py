@@ -29,6 +29,16 @@ def send_email(status, email):
 
 
 class RequestViewSet(viewsets.ModelViewSet):
+    """ Class responsible for all actions involving the request endpoint
+    
+        Variables:
+        queryset: default queryset if none is provided
+        permission_classes: permission required to access the request endpoint
+        serializer_class: default serializer if none is provided
+        filter_backends: filter used in the request endpoint
+        filterset_fields: field used for filtering
+        http_method_names: HTTP methods allowed in the request endpoint
+    """
     queryset = Request.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = SuperRequestSerializer
@@ -37,6 +47,7 @@ class RequestViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
     
     def create(self, request):
+        """ Receives the data, validates and creates the request """
         serializer = RequestRegistrationSerializer(
             data=request.data, context={'request': request}
         )
@@ -54,6 +65,10 @@ class RequestViewSet(viewsets.ModelViewSet):
         return Response(data=response_message, status=response_status)
     
     def list(self, request):
+        """ If accessed by a super user, it will provide requests from 
+            all users. If accessed by a regular user, it will only provide 
+            requests from that user 
+        """
         if request.user.is_staff:
             request_queryset = self.filter_queryset(Request.objects.all())
             serializer = SuperRequestSerializer(request_queryset, many=True)
@@ -64,6 +79,10 @@ class RequestViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     def retrieve(self, request, pk=None):
+        """ Returns the request corresponding to the id, if accessed by a 
+            regular user, it will only return the request if the user is the 
+            owner 
+        """
         request_queryset = Request.objects.get(id=pk)
         if request.user.is_staff:
             serializer = SuperRequestSerializer(request_queryset)
@@ -78,6 +97,7 @@ class RequestViewSet(viewsets.ModelViewSet):
                 return Response(data=response_message, status=response_status)
 
     def partial_update(self, request, pk=None):
+        """ Allows the super user to edit the status of a request """
         if request.user.is_staff:
             request_queryset = Request.objects.get(id=pk)
             request_user = User.objects.get(id=request_queryset.user.id)
@@ -101,6 +121,7 @@ class RequestViewSet(viewsets.ModelViewSet):
         return Response(data=response_message, status=response_status)
     
     def destroy(self, request, pk=None):
+        """ Allows the owner of the request to delete it """
         request_queryset = Request.objects.get(id=pk)
         response_status = status.HTTP_200_OK
         response_message = {"Success": "request successfully cancelled"}

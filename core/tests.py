@@ -7,7 +7,7 @@ from .models import Request
 class ProjectTestCase(APITestCase):
     """ Tests all actions related to requests
         
-        Parameters:
+        Variables:
         user_token: super user access token
         user2: regular user
         user2_token: regular user access token
@@ -87,7 +87,7 @@ class ProjectTestCase(APITestCase):
         self.assertTrue(response.data)
         self.assertEqual(dict(response.data)['message'], 'test request')
 
-    def testUpdate(self):
+    def test_update(self):
         """ Testing request update in two different ways:
             With a regular user, checking the response status expecting a 
             HTTP 401 UNAUTHORIZED.
@@ -114,3 +114,29 @@ class ProjectTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(
             Request.objects.get(id=self.request_id).status == 'A')
+    
+    def test_delete(self):
+        """ Testing request delete in two different ways:
+            With a super user, checking the response status expecting a 
+            HTTP 401 UNAUTHORIZED.
+            With the owner user, expecting a HTTP 200 OK and verifying that 
+            the request was deleted.
+        """
+        # super user trying to delete the request
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {self.user_token}')
+        response = self.client.delete(
+            f'/requests/{self.request_id}/')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertTrue(
+            Request.objects.filter(id=self.request_id).exists())
+        
+        # owner user trying to delete the request
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {self.user2_token}')
+        response = self.client.delete(
+            f'/requests/{self.request_id}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(
+            Request.objects.filter(id=self.request_id).exists())
+        
