@@ -4,6 +4,12 @@ from rest_framework.test import APITestCase
 
 
 class UserTestCase(APITestCase):
+    """ Tests all actions related to users
+        
+        Parameters:
+        user_data: user login information
+    """
+    
     user_data = None
 
     def setUp(self):
