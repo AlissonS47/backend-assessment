@@ -114,7 +114,8 @@ Ao finalizar a implementação, o diretório da solução pode ser submetido de 
 Feito 🤘
 
 
-## Documentação
+
+# Documentação
 
 ### Rotas:
 - users/registration/ 
@@ -125,15 +126,35 @@ Feito 🤘
   
 - users/login/refresh/ 
   - Rota para atualizar o token JWT expirado, recebe como parâmentro o token refresh, e retorna um novo token access
+  
+- requests/ 
+  - Se utilizado o método GET por um usuário normal, retorna todas as solicitações deste usuário. Se utilizado por um super usuário,
+    retorna as solicitações de todos os usuários
+  
+- requests/ 
+  - Se utilizado o método POST, registra uma request, recebendo como parâmetro "message"
+  
+- requests/{id}/ 
+  - Se utilizado o método GET por um super usuário, retorna a solicitação correspondente ao id
+  
+- requests/{id}/ 
+  - Se utilizado o método PATCH por um super usuário, faz uma atualização parcial da solicitação correspondente ao id, sendo possível
+    atualizar somente o "status" da solicitação
 
 ### Detalhes:
+- Autenticação
+  - Com exceção das rotas de registro e login de usuário, todas as outras requerem autenticação via token JWT
+
 - Login
-  - Ao fazer login, o usuário recebe dois tokens JWT, "refresh" e "access". O token access é utilizado para realizar a autenticação nas rotas, já o token refresh é utilizado para atualizar o token access expirado
+  - Ao fazer login, o usuário recebe dois tokens JWT, "refresh" e "access". O token access é utilizado para realizar a autenticação nas 
+    rotas, já o token refresh é utilizado para atualizar o token access expirado
   ```
           {
               "refresh": "...",
               "access": "..."
           }
   ```
-  
 
+- Buscas
+  - Na rota requests/ é possível fazer uma busca via query string, o parâmetro utilizado é "checked" e com ele é possível buscar as 
+    solicitações que já foram ou não checadas. A busca fica na forma *requests/?checked=true*
