@@ -158,3 +158,13 @@ Feito 🤘
 - Buscas
   - Na rota requests/ é possível fazer uma busca via query string, o parâmetro utilizado é "checked" e com ele é possível buscar as 
     solicitações que já foram ou não checadas. A busca fica na forma *requests/?checked=true*
+
+## Nota Final
+A API está disponível neste endereço: https://backend-assessment47.herokuapp.com/ <br/>
+Todos os testes manuais foram feitos com o auxílio do software Postman <br/>
+Super usuário para testes:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;username: super<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;password: super123<br/>
+Desde já, agradeço pela oportunidade, fico a disposição :v::smile:
+
+
